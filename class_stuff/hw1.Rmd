@@ -1,0 +1,66 @@
+
+```{r}
+# Q1
+# get the ratios tolerable with sunscreen vs without
+sun_data <- c(120/30, 240/45, 480/180, 150/15, 480/200, 270/20, 300/15, 180/10, 300/20, 240/20, 480/60, 300/60, 480/120)
+# get the required data
+# get the mean
+sun_data_mean <- mean(sun_data)
+
+# get the standard deviation 
+sun_data_std <- sd(sun_data)
+
+# get the length
+sun_data_points <- length(sun_data)
+
+# get the lower bound of confidence interval
+sun_data_mean + qt(0.025, sun_data_points - 1) * sun_data_std / sqrt(sun_data_points)
+
+# get the upper bound of confidence interval
+sun_data_mean - qt(0.025, sun_data_points - 1) * sun_data_std / sqrt(sun_data_points)
+
+# Do it using R function to test
+# Calculate the confidence interval
+result <- t.test(sun_data)
+ 
+# Extract the confidence interval
+confidence_interval <- result$conf.int
+ 
+# Print the confidence interval
+confidence_interval
+
+# Q3
+school <- c(82, 69, 73, 43, 58, 56, 76, 65)
+home <- c(63, 42, 74, 37, 51, 43, 80, 82)
+hsdiff <- school - home
+hsdiff_length <- length(hsdiff)
+hsdiff_mean <- mean(hsdiff)
+hsdiff_std <- sd(hsdiff)
+# null hypothesis
+mean_diff = 0
+# alternative hypothesis mean_diff  > 0
+
+# test statistics
+tstat = (hsdiff_mean - mean_diff) / (hsdiff_std/ sqrt(hsdiff_length))
+
+# p value
+hsdiff_p1 <- pt(tstat, hsdiff_length - 1, lower.tail = FALSE)
+# Q4
+school <- c(82, 69, 73, 43, 58, 56, 76, 65)
+home <- c(63, 42, 74, 37, 51, 43, 80, 62)
+hsdiff <- school - home
+hsdiff_length <- length(hsdiff)
+hsdiff_mean <- mean(hsdiff)
+hsdiff_std <- sd(hsdiff)
+# null hypothesis
+mean_diff = 0
+# alternative hypothesis mean_diff  > 0
+
+# test statistics
+tstat = (hsdiff_mean - mean_diff) / (hsdiff_std/ sqrt(hsdiff_length))
+
+# p value
+hsdiff_p2 <- pt(tstat, hsdiff_length - 1, lower.tail = FALSE)
+```
+
+

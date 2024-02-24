@@ -1,0 +1,27 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+# Calculate the bmi and save it as a separate column
+baseball$bmi = (baseball$weight * 703) / (baseball$height ^ 2)
+# create subsets with field = 0 (pitchers) field = 1 (fielders)
+pitchers = subset(baseball, baseball$field == 0)
+fielders = subset(baseball, baseball$field == 1)
+
+# sign test
+X <- baseball$bmi
+# get the lengths
+n <- length(X)
+# get the positive ones
+phi <- X > 24
+# get the sum of positive
+B <- sum(phi)
+prop.test(B, n, alternative =  "greater")
+
+# wilcox test
+wilcox.test(X, mu = 24, exact = FALSE, correct = TRUE, alternative = "greater")
+
+```

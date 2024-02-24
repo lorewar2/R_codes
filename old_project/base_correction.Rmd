@@ -1,0 +1,178 @@
+
+```{r}
+library("gridExtra")
+library("ggpubr")
+
+get_base_from_num <- function(x) {
+  if (x == 0) {
+    base = 'A'
+  }
+  else if (x == 1) {
+    base = 'C'
+  }
+  else if (x == 2) {
+    base = 'G'
+  }
+  else if (x == 3) {
+    base = 'T'
+  }
+}
+
+get_threebase_context_arr <- function(x) {
+  v <- c()
+  for (i in 0:3) {
+    for (j in 0:3) {
+      first_base <- get_base_from_num(i)
+      third_base <- get_base_from_num(j)
+      test <- paste0(first_base, x ,third_base)
+      v <- append(v, paste0(first_base, x, third_base))
+    }
+  }
+  v
+}
+# process make the colomns error percentage, poa fix percentage, del fix percentage, parallel fix percentage
+ttoa <- gtoa
+ttoc <- gtoc
+ttog <- gtot
+y_len <- 0.025
+
+ttoa$error_percent = (ttoa$V2 / ttoa$V1) * 100
+ttoa$sub_corrected_percent = (ttoa$V3 / ttoa$V1) * 100
+ttoa$del_corrected_percent = (ttoa$V4 / ttoa$V1) * 100
+ttoa$para_corrected_percent = (ttoa$V5 / ttoa$V1) * 100
+
+ttoc$error_percent = (ttoc$V2 / ttoa$V1) * 100
+ttoc$sub_corrected_percent = (ttoc$V3 / ttoa$V1) * 100
+ttoc$del_corrected_percent = (ttoc$V4 / ttoa$V1) * 100
+ttoc$para_corrected_percent = (ttoc$V5 / ttoa$V1) * 100
+
+ttog$error_percent = (ttog$V2 / ttoa$V1) * 100
+ttog$sub_corrected_percent = (ttog$V3 / ttoa$V1) * 100
+ttog$del_corrected_percent = (ttog$V4 / ttoa$V1) * 100
+ttog$para_corrected_percent = (ttog$V5 / ttoa$V1) * 100
+
+# T to A err
+t_context <- get_threebase_context_arr('G')
+ID <- t_context
+a_error <- ttoa$error_percent
+title <- "G>A"
+df <- data.frame(ID, a_error, title)
+
+u1  <- ggplot(df, aes( x = ID)) +
+geom_bar(aes(x = ID, y = a_error),stat="identity", fill="brown", alpha = 1.0) +
+theme_light() +
+ylim(0, y_len) +
+theme(plot.title = element_text(color="black", size=14, face="bold.italic"), axis.text.x = element_blank(), axis.title.x=element_blank(), axis.title.y=element_blank()) +
+scale_x_discrete("ID", labels = as.character(ID), breaks = ID) +
+facet_grid(. ~ title)
+
+# T to A fixed
+a_final <- ttoa$error_percent
+a_final_poa <- ttoa$error_percent - ttoa$sub_corrected_percent
+a_final_del <- a_final_poa - ttoa$del_corrected_percent
+a_final_para <- a_final_del - ttoa$para_corrected_percent
+df <- data.frame(ID, a_final, a_final_poa, a_final_del, a_final_para, title)
+
+d1 <- ggplot(df, aes( x = ID)) +
+geom_bar(aes(x = ID, y = a_final),stat="identity", fill="bisque", alpha = 0.8) +
+geom_bar(aes(x = ID, y = a_final_poa),stat="identity", fill="burlywood", alpha = 0.7) +
+geom_bar(aes(x = ID, y = a_final_del),stat="identity", fill="chocolate1", alpha = 0.5) +
+geom_bar(aes(x = ID, y = a_final_para),stat="identity", fill="brown", alpha = 1.0) +
+theme_light() +
+  ylim(0, y_len) +
+theme(plot.title = element_text(color="black", size=14, face="bold.italic"), axis.text.x = element_text(angle = 60, vjust = 0.5), axis.title.x=element_blank(), axis.title.y=element_blank()) +
+scale_x_discrete("ID", labels = as.character(ID), breaks = ID)
+
+#T to C err
+ID <- t_context
+a_error <- ttoc$error_percent
+title <- "G>C"
+df <- data.frame(ID, a_error, title)
+
+u2 <- ggplot(df, aes( x = ID)) +
+geom_bar(aes(x = ID, y = a_error),stat="identity", fill="brown", alpha = 1.0) +
+theme_light() +
+  ylim(0, y_len) +
+theme(plot.title = element_text(color="black", size=14, face="bold.italic"), axis.text.y = element_blank(), axis.text.x = element_blank(), axis.title.x=element_blank(), axis.title.y=element_blank()) +
+scale_x_discrete("ID", labels = as.character(ID), breaks = ID) +
+facet_grid(. ~ title)
+
+# T to A fixed
+a_final <- ttoc$error_percent
+a_final_poa <- ttoc$error_percent - ttoc$sub_corrected_percent
+a_final_del <- a_final_poa - ttoc$del_corrected_percent
+a_final_para <- a_final_del - ttoc$para_corrected_percent
+df <- data.frame(ID, a_final, a_final_poa, a_final_del, a_final_para, title)
+
+d2 <- ggplot(df, aes( x = ID)) +
+geom_bar(aes(x = ID, y = a_final),stat="identity", fill="bisque", alpha = 0.8) +
+geom_bar(aes(x = ID, y = a_final_poa),stat="identity", fill="burlywood", alpha = 0.7) +
+geom_bar(aes(x = ID, y = a_final_del),stat="identity", fill="chocolate1", alpha = 0.5) +
+geom_bar(aes(x = ID, y = a_final_para),stat="identity", fill="brown", alpha = 1.0) +
+theme_light() +
+  ylim(0, y_len) +
+theme(plot.title = element_text(color="black", size=14, face="bold.italic"), axis.text.y = element_blank(), axis.text.x = element_text(angle = 60, vjust = 0.5), axis.title.x=element_blank(), axis.title.y=element_blank()) +
+scale_x_discrete("ID", labels = as.character(ID), breaks = ID)
+
+
+#T to G err
+ID <- t_context
+a_error <- ttog$error_percent
+title <- "G>T"
+title2 <- "Pacbio Errors"
+df <- data.frame(ID, a_error, title, title2)
+
+u3 <- ggplot(df, aes( x = ID)) +
+geom_bar(aes(x = ID, y = a_error),stat="identity", fill="brown", alpha = 1.0) +
+theme_light() +
+  ylim(0, y_len) +
+theme(plot.title = element_text(color="black", size=14, face="bold.italic"), axis.text.y = element_blank(), axis.text.x = element_blank(), axis.title.x=element_blank(), axis.title.y=element_blank()) +
+scale_x_discrete("ID", labels = as.character(ID), breaks = ID) +
+facet_grid(title2 ~ title)
+
+# T to A fixed
+a_final <- ttog$error_percent
+a_final_poa <- ttog$error_percent - ttog$sub_corrected_percent
+a_final_del <- a_final_poa - ttog$del_corrected_percent
+a_final_para <- a_final_del - ttog$para_corrected_percent
+title2 <- "TopoQual Errors"
+df <- data.frame(ID, a_final, a_final_poa, a_final_del, a_final_para, title, title2)
+
+d3 <- ggplot(df, aes( x = ID)) +
+geom_bar(aes(x = ID, y = a_final),stat="identity", fill="bisque", alpha = 0.8) +
+geom_bar(aes(x = ID, y = a_final_poa),stat="identity", fill="burlywood", alpha = 0.7) +
+geom_bar(aes(x = ID, y = a_final_del),stat="identity", fill="chocolate1", alpha = 0.5) +
+geom_bar(aes(x = ID, y = a_final_para),stat="identity", fill="brown", alpha = 1.0) +
+theme_light() +
+  ylim(0, y_len) +
+theme(plot.title = element_text(color="black", size=14, face="bold.italic"), axis.text.y = element_blank(), axis.text.x = element_text(angle = 60, vjust = 0.5), axis.title.x=element_blank(), axis.title.y=element_blank()) +
+scale_x_discrete("ID", labels = as.character(ID), breaks = ID) +
+facet_grid(title2 ~ .)
+
+# null plot to get the legend
+data <- data.frame(x = 1:15,    # Create example data frame
+                   y = c(runif(15, 0, 2),
+                         runif(15, 2, 6),
+                         runif(15, 3, 4)),
+                   Fixed.by = rep(c("POA Sub", "POA Del", "Parallel"), each = 15))
+test <- ggplot(data,                    # Specify colors manually
+       aes(x = x,
+           y = y,
+           col = Fixed.by)) +
+  geom_line() +
+  geom_point() +
+  scale_color_manual(values = c("chocolate1", 
+                                "burlywood",
+                                "bisque"))
+legend <- cowplot::get_legend(test)
+# concancate all graphs into one
+figure  <- grid.arrange(u1, u2, u3, NULL,
+                        d1, d2, d3, legend,
+          ncol = 4, nrow = 2, widths=c(2,2,2,1), heights=c(2,2))
+
+annotate_figure(figure,
+                bottom = text_grob("Three base context                               "),
+                left = text_grob("Error probability %", rot = 90)
+                )
+```
+

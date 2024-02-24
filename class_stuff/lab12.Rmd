@@ -1,0 +1,18 @@
+```{r}
+# 1 a
+prop.test(110, 400, p = 0.327, correct = F, alternative = "two.sided")
+
+# 1 b
+prop.test(110, 400, p = 0.327, correct = F, alternative = "two.sided")$conf.int
+
+# 2
+binom.test(0, 20, p = 0.05, alternative = "two.sided")$conf.int
+
+# 3 a
+prop.test(c(226, 165), c(473, 439), correct = FALSE)
+
+# 3 b
+prop.test(c(226, 165), c(473, 439), correct = FALSE)$conf.int
+
+```
+

@@ -1,0 +1,27 @@
+```{r}
+# Calculate the bmi and save it as a separate column
+baseball$bmi = (baseball$weight * 703) / (baseball$height ^ 2)
+
+# Get the required data for t test
+# Length of the data 
+n = length(baseball$bmi)
+# Mean of the data
+xbar = mean(baseball$bmi)
+# STD of the data
+s = sd(baseball$bmi)
+# calculate the t value using equation
+tstat = (xbar - 24) / (s/ sqrt(n))
+# get the p value pertaining to the t value
+pvalue = pt(tstat, n-1)
+# check if the obtained p value is within error margin
+if ((1 - pvalue) < 0.05) {
+  print("NULL HYPOTHESIS REJECTED")
+} else {
+  print("ALTERNATE HYPOTHESIS REJECTED")
+}
+# Do the same using R function
+t.test(baseball$bmi,
+       alternative = "greater",
+       mu = xbar, conf.level = 0.95)
+```
+

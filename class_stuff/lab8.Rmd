@@ -1,0 +1,67 @@
+ 
+```{r}
+library(Sleuth3)
+library(lawstat)
+library(multcomp)
+library(emmeans)
+# Fit model (one-way ANOVA)
+data(case0501)
+fitlm <- lm(Lifetime ~ Diet, data = case0501)
+
+# Get residuals
+lm.res <- resid(fitlm)
+# QQ Plot
+qqnorm(lm.res)
+qqline(lm.res)
+
+# Shapiro-Wilk test of normality
+shapiro.test(lm.res)
+
+# residual plot
+plot(resid(fitlm) ~ fitted(fitlm))
+
+# brown-Forsythe test t
+levene.test(y=case0501$Lifetime, group = case0501$Diet)
+
+# contrasting normal diet
+# Fit model without intercept to get group means
+fitlm <- lm(Lifetime ~ 0 + Diet, data = case0501)
+# Create a contrast matrix using ci as row 1
+ci <- c(-1/5, -1/5, -1/5, 1, -1/5, -1/5)
+K <- matrix(ci, ncol = 6)
+# Now test the contrast hypothesis
+contest <- glht(fitlm, linfct = K, alternative = "less")
+# Report the estimate and test
+summary(contest)
+
+# contrasting 50kcal diet
+# Fit model without intercept to get group means
+fitlm <- lm(Lifetime ~ 0 + Diet, data = case0501)
+# Create a contrast matrix using ci as row 1
+ci <- c(-1/4, -1/4, 1/2, -1/4, 1/2, -1/4)
+K <- matrix(ci, ncol = 6)
+# Now test the contrast hypothesis
+contest <- glht(fitlm, linfct = K, alternative = "two.sided")
+# Report the estimate and test
+summary(contest)
+
+# scheffe test
+c1 <- c(-1, 0, 0, 1, 0, 0)
+c2 <- c(0, -1, 0, 1, 0, 0)
+c3 <- c(0, 0, -1, 1, 0, 0)
+c4 <- c(0, 0, 0, 1, -1, 0)
+c5 <- c(0, 0, 0, 1, 0, -1)
+
+fit.emm <- emmeans(fitlm, specs = ~ Diet)
+summary(contrast(fit.emm, method = list(c1,c2,c3,c4,c5), adjust = "scheffe"), scheffe.rank = 5)
+
+# bonferrnoni test
+# Fit model without intercept to get group means
+fitlm <- lm(Lifetime ~ 0 + Diet, data = case0501)
+# Create a contrast matrix using c1 as row 1 and c2 as row 2
+K <- rbind(c1, c2, c3, c4, c5)
+# Now test the contrast hypothesis
+contest <- glht(fitlm, linfct = K)
+# Report the estimate and test
+summary(contest, test=adjusted("bonferroni"))
+```

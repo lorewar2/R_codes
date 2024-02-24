@@ -1,0 +1,43 @@
+
+
+```{r}
+get_base_from_num <- function(x) {
+  if (x == 0) {
+    base = 'A'
+  }
+  else if (x == 1) {
+    base = 'C'
+  }
+  else if (x == 2) {
+    base = 'G'
+  }
+  else if (x == 3) {
+    base = 'T'
+  }
+}
+
+get_threebase_context_arr <- function() {
+  v <- c()
+  for (i in 0:3) {
+    for (j in 0:3) {
+      for (k in 0:3) {
+        first_base <- get_base_from_num(i)
+        second_base <- get_base_from_num(j)
+        third_base <- get_base_from_num(k)
+        test <- paste0(first_base, second_base ,third_base)
+        v <- append(v, paste0(first_base, second_base, third_base))
+      }
+    }
+  }
+  v
+}
+
+three_base_arr <- get_threebase_context_arr()
+chr2_mutation_3_base_context_for_r$base_context = three_base_arr
+
+ggplot(chr2_mutation_3_base_context_for_r, aes( x = base_context)) +
+geom_bar(aes(x = base_context, y = Errors..),stat="identity", fill="brown", alpha = 0.8) +
+  xlab("Three base context") + ylab("Mutation type probability (%)") +
+  theme_light() +
+  theme(plot.title = element_text(color="black", size=14, face="bold.italic"), axis.text.x = element_text(angle = 60, vjust = 0.5))
+```

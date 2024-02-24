@@ -1,0 +1,36 @@
+
+
+```{r}
+# scatter plot
+plot(STORIES ~ HEIGHT, data = buildings)
+
+# linear model
+fitlm <- lm(STORIES ~ HEIGHT, data = buildings)
+summary(fitlm)
+
+# confidence levels
+confint((fitlm))
+
+# manual confidence levels
+b0 = -3.331298
+b1 = 0.080015
+x = buildings$HEIGHT
+y = buildings$STORIES
+n = length(x)
+
+xbar = mean(x)
+ybar = mean(y)
+yhat <- b0 + b1*x
+(sigma <- sqrt( sum((y-yhat)^2)/(n-2) ))
+sxx <- var(x)*(n-1)
+(SEb0 <- sigma * sqrt(1/n + xbar^2 / sxx))
+(SEb1 <- sigma * sqrt(1 / sxx))
+
+# CI for beta 1
+LL1 <- b1 - qt(0.975, n-2) * SEb1
+LL1
+UU1 <- b1 + qt(0.975, n-2) * SEb1
+UU1
+
+```
+

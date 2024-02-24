@@ -1,0 +1,26 @@
+---
+title: "HW2"
+output: html_notebook
+---
+
+
+
+```{r}
+library(Sleuth3)
+#data(case0301)
+
+# box plot for seeded and unseeded
+boxplot(Rainfall ~ Treatment, data = case0301)
+# log box plot for seeded and unseeded
+boxplot(log(Rainfall) ~ Treatment, data = case0301)
+# t test on data
+t.test(Rainfall ~ Treatment, data = case0301, alternative = "greater")
+# t test on log transform data
+t.test(log(Rainfall) ~ Treatment, data = case0301, alternative = "greater")
+# rank sum test on data
+wilcox.test(Rainfall ~ Treatment, exact = FALSE , data = case0301, alternative = "greater")
+# rank sum test on log transform data
+wilcox.test(log(Rainfall) ~ Treatment, exact = FALSE, data = case0301, alternative = "greater")
+
+```
+

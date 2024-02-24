@@ -1,0 +1,19 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+pitchers = subset(baseball, field==0)
+mean(pitchers$average)
+sd(pitchers$average)
+
+pitchers2 = baseball[baseball$field == 0, ]
+fielders = baseball[baseball$field == 1, ]
+baseball$bmi = (baseball$weight * 700) / (baseball$height ^ 2)
+sort(baseball$bmi)
+boxplot(bmi ~ field, data = baseball)
+```
+
+

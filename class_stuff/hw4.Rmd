@@ -1,0 +1,60 @@
+
+```{r}
+cancer <- read.csv("cancer.csv")
+
+# a, graph
+ggplot(cancer, aes(y = breast, x = income)) +
+geom_point() + theme_bw() + geom_smooth(method = lm, se = F)
+
+# b, check if significant
+fitlm <- lm(breast ~ income, data = cancer)
+summary(fitlm)
+
+# c, graph and model
+ggplot(cancer, aes(y = lung, x = income)) +
+geom_point() + theme_bw() + geom_smooth(method = lm, se = F)
+fitlm <- lm(lung ~ income, data = cancer)
+summary(fitlm)
+
+# d, graph
+ggplot(cancer, aes(y = breast, x = poverty)) +
+geom_point() + theme_bw() + geom_smooth(method = lm, se = F)
+
+# e, model
+fitlm <- lm(breast ~ poverty, data = cancer)
+summary(fitlm)
+
+# f, model
+fitlm <- lm(breast ~ poverty + income, data = cancer)
+summary(fitlm)
+
+# g, graph
+# make a list of states
+a = c()
+for (test_state in cancer$state) {
+  if (test_state %in% a){
+    
+  }
+  else {
+    a <- append(a, test_state)
+  }
+}
+
+# make a list of lat mean and mel mean
+lat_mean = c()
+mel_mean = c()
+
+for (test_state in a) {
+  current_subset <- subset(cancer, state == test_state)
+  lat_mean <- append(lat_mean, mean(current_subset$lat))
+  mel_mean <- append(mel_mean, mean(current_subset$melanoma))
+}
+mel_data <- data.frame(mel_mean, lat_mean)
+ggplot(mel_data, aes(y = mel_mean, x = lat_mean)) +
+geom_point() + theme_bw() + geom_smooth(method = lm, se = F)
+
+# h, model
+fitlm <- lm(mel_mean ~ lat_mean, data = mel_data)
+summary(fitlm)
+
+```

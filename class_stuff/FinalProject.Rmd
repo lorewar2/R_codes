@@ -1,0 +1,55 @@
+
+
+```{r}
+library(Rfit)
+library(leaps)
+
+# 1
+sleep_data_all <- read.csv("sleep75.csv", header = TRUE)
+sleep_data <- subset(sleep_data_all, select = c(age, clerical, construc, educ, lhrwage , male, yrsmarr, selfe, sleep))
+sleep_data_cont <- subset(sleep_data, select = c(age, educ, lhrwage, yrsmarr, sleep))
+pairs(sleep_data_cont[c("age", "educ", "lhrwage" , "yrsmarr", "sleep")])
+
+myLm <- lm(sleep ~ age + educ + lhrwage + yrsmarr, data = sleep_data_cont)
+summary(myLm)
+
+# 2 
+
+cleric <- subset(sleep_data_all, clerical == 1,select = c(sleep))
+construc <- subset(sleep_data_all, construc == 1,select = c(sleep))
+selfemp <- subset(sleep_data_all, selfe == 1,select = c(sleep))
+union <- subset(sleep_data_all, union == 1,select = c(sleep))
+workscnd <- subset(sleep_data_all, workscnd > 0,select = c(sleep))
+cleric = cleric[['sleep']] 
+construc = construc[['sleep']] 
+selfemp  = selfemp [['sleep']] 
+union  = union [['sleep']] 
+workscnd = workscnd [['sleep']] 
+# box plots for the data
+df <- data.frame(Job=rep(c("cleric","construc","selfemp", "second"),times=c(length(cleric),length(construc),length(selfemp), length(workscnd))), Sleep=c(cleric,construc,selfemp, workscnd))
+
+fitaov <- aov(Sleep ~ Job, data = df)
+summary(fitaov)
+
+ # 3
+ggplot(sleep_data_all, aes(y = sleep, x = age, col = male)) +
+geom_point() + theme_bw() + geom_smooth(method = lm, se = F)
+myLm <- lm(sleep ~ age + male, data = sleep_data)
+summary(myLm)
+
+# post hoc
+all.sub <- regsubsets(sleep ~ age + black + clerical + construc + educ + earns74 + gdhlth + inlf + lothinc + male + marr + prot + selfe + south + spsepay + spwrk75 + totwrk + union + worknrm + workscnd + exper + yngkid + hrwage + agesq + lhrwage + yrsmarr,
+data=sleep_data_all,
+nbest = 1, # 1 best model for each number of predictors
+nvmax = NULL, # NULL for no limit on number of variables
+force.in = NULL, force.out = NULL,
+method = "exhaustive")
+all.sub
+plot(all.sub, scale = "Cp", main = "Cp")
+plot(all.sub, scale = "bic", main = "BIC")
+
+myLm <- lm(sleep ~  gdhlth + prot + selfe + spsepay + union + agesq + exper, data = sleep_data_all)
+summary(myLm)
+
+```
+

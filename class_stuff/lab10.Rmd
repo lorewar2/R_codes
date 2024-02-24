@@ -1,0 +1,28 @@
+
+
+```{r}
+library(Sleuth3)
+library(ggplot2)
+mfoam <- ex0923
+cancer <- read.csv("cancer.csv")
+# display graphs
+pairs(log(mfoam[c("Income2005", "Educ", "AFQT")]))
+
+ggplot(mfoam, aes(y = log(Income2005), x = Educ, col = Gender)) +
+geom_point() + theme_bw() + geom_smooth(method = lm, se = F)
+
+ggplot(mfoam, aes(y = log(Income2005), x = AFQT, col = Gender)) +
+geom_point() + theme_bw() + geom_smooth(method = lm, se = F)
+
+# check if significant
+fitlm <- lm(log(Income2005) ~ Educ + AFQT + Gender, data = mfoam)
+summary(fitlm)
+
+# test if mean salary of males vs females (assumed parallel from graph)
+myLm <- lm(Income2005 ~ Educ + Gender, data = mfoam)
+summary(myLm)
+
+myLm <- lm(Income2005 ~ AFQT + Gender, data = mfoam)
+summary(myLm)
+
+```

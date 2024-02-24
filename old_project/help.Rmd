@@ -1,0 +1,168 @@
+
+```{r}
+
+library("gridExtra")
+library("ggpubr")
+
+# make dataframe with all 
+df <- finalF23
+
+# make income and race variable as described 
+lendf = nrow(df)
+df$race_int = seq(1, lendf)
+df$income_int = seq(1, lendf)
+
+for (i in 1:lendf){
+  print(df$race[i])
+  if (df$race[i] == "White") {
+    df$race_int[i] = 3
+  } else if (df$race[i] == "Other") {
+    df$race_int[i] = 2
+  } else if (df$race[i] == "Hispanic") {
+    df$race_int[i] = 1
+  } else if (df$race[i] == "Black") {
+    df$race_int[i] = 0
+  }
+  if (df$income[i] == 1) {
+    df$income_int[i] = 8000
+  } else if (df$income[i] == 2) {
+    df$income_int[i] = 10000
+  } else if (df$income[i] == 3) {
+    df$income_int[i] = 20000
+  } else if (df$income[i] == 4) {
+    df$income_int[i] = 30000
+  } else if (df$income[i] == 5) {
+    df$income_int[i] = 40000
+  } else if (df$income[i] == 6) {
+    df$income_int[i] = 75000
+  } else if (df$income[i] == 7) {
+    df$income_int[i] = 85000
+  } else if (df$income[i] == 8) {
+    df$income_int[i] = 95000
+  } else if (df$income[i] == 9) {
+    df$income_int[i] = 100000
+  }
+}
+# make 10 subsets and graphs
+
+# male republican 1
+df_m1 <- subset(df, male == 1 & republican == 1,select = c(income_int, supportcctax, race_int))
+df_m1$title1 <- "Male"
+df_m1$title2 <- "Democrat"
+gm1 <- ggplot(df_m1, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.text.y=element_blank(), axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
+  guides(col = FALSE) +
+  facet_grid(title2 ~ title1)
+
+# female republican 1
+df_f1 <- subset(df, male == 0 & republican == 1,select = c(income_int, supportcctax, race_int))
+df_f1$title <- "Female"
+gf1 <- ggplot(df_f1, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
+  guides(col = FALSE) +
+  facet_grid(. ~ title)
+
+# male republican 2
+df_m2 <- subset(df, male == 1 & republican == 2,select = c(income_int, supportcctax, race_int))
+df_m2$title2 <- "Lean Democrat"
+gm2 <- ggplot(df_m2, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.text.y=element_blank(), axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
+  guides(col = FALSE) +
+  facet_grid(title2 ~ .)
+
+# female republican 2
+df_f2 <- subset(df, male == 0 & republican == 2,select = c(income_int, supportcctax, race_int))
+gf2 <- ggplot(df_f2, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
+ guides(col = FALSE)
+
+# male republican 3
+df_m3 <- subset(df, male == 1 & republican == 3,select = c(income_int, supportcctax, race_int))
+df_m3$title2 <- "Independant"
+gm3 <- ggplot(df_m3, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.text.y=element_blank(), axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
+ guides(col = FALSE) +
+  facet_grid(title2 ~ .)
+
+# female republican 3
+df_f3 <- subset(df, male == 0 & republican == 3,select = c(income_int, supportcctax, race_int))
+gf3 <- ggplot(df_f3, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
+ guides(col = FALSE) 
+
+# male republican 4
+df_m4 <- subset(df, male == 1 & republican == 4,select = c(income_int, supportcctax, race_int))
+df_m4$title2 <- "Lean Republican"
+gm4 <- ggplot(df_m4, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.text.y=element_blank(), axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
+ guides(col = FALSE) +
+  facet_grid(title2 ~ .)
+
+# female republican 4
+df_f4 <- subset(df, male == 0 & republican == 4,select = c(income_int, supportcctax, race_int))
+gf4 <- ggplot(df_f4, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
+ guides(col = FALSE) 
+
+# male republican 5
+df_m5 <- subset(df, male == 1 & republican == 5,select = c(income_int, supportcctax, race_int))
+df_m5$title2 <- "Republican"
+gm5 <- ggplot(df_m5, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.text.y=element_blank(), axis.title.y=element_blank(), axis.title.x=element_blank()) +
+  guides(col = FALSE) +
+  facet_grid(title2 ~ .)
+
+# female republican 5
+df_f5 <- subset(df, male == 0 & republican == 5,select = c(income_int, supportcctax, race_int))
+gf5 <- ggplot(df_f5, aes(y = supportcctax, x = income_int, col = race_int)) +
+  scale_x_continuous(labels = scales::dollar_format(), name="Income", breaks=c(10000, 40000, 75000)) +
+  geom_point(position=position_jitter(h=0.3500, w=10500)) +
+  geom_smooth(method=NULL , color="blue", fill="#69b3a2", se=TRUE) +
+  theme(axis.title.y=element_blank(), axis.title.x=element_blank()) +
+  guides(col = FALSE) 
+
+
+# concancate all graphs into one
+figure  <- grid.arrange(gf1, gm1,
+          gf2, gm2, 
+          gf3, gm3,
+          gf4, gm4,
+          gf5, gm5,
+          ncol = 2, nrow = 5)
+
+annotate_figure(figure,
+                bottom = text_grob("Income"),
+                left = text_grob("Support of tax", rot = 90),
+                right = text_grob("Race:\nBlack\nHispanic\nOther\nWhite")
+                )
+
+```
+
+

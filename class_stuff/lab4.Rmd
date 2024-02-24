@@ -1,0 +1,23 @@
+```{R}
+# Calculate the bmi and save it as a separate column
+baseball$bmi = (baseball$weight * 703) / (baseball$height ^ 2)
+# create subsets with field = 0 (pitchers) field = 1 (fielders)
+pitchers = subset(baseball, baseball$field == 0)
+fielders = subset(baseball, baseball$field == 1)
+sd(pitchers$bmi)
+sd(fielders$bmi)
+# run the two sample t-test and save the data in tresult
+tresult = t.test(fielders$bmi, pitchers$bmi, alternative = "two.sided", var.equal = TRUE)
+# output the pvalue
+tresult$p.value
+# check p value is greater or less than 0.05
+if (tresult$p.value < 0.05) {
+  print("NULL HYPOTHESIS REJECTED")
+} else {
+  print("NULL HYPOTHESIS NOT REJECTED")
+}
+
+# output the confidence interval and confidence level
+tresult$conf.int
+
+```

@@ -1,0 +1,126 @@
+
+```{r}
+library(ggplot2)
+library("cowplot")
+
+# colors
+color_yellow <- rgb(1.0, 0.8, 0.3, 1)
+color_green <- rgb(0.45, 1, 0.0, 1)
+color_tube <- rgb(1, 0.52, 1, 1)
+color_array <- c("chocolate1", "burlywood" , "green")
+
+chr2_topoqual_data$index = 0:93
+chr2_topoqual_data$pacbio = -10 * log10(chr2_topoqual_data$pacbio_error / chr2_topoqual_data$pacbio_total + 0.000000000000000000001)
+chr2_topoqual_data$topoqual = -10 * log10(chr2_topoqual_data$topoqual_error / chr2_topoqual_data$topoqual_total + 0.000000000000000000001)
+chr2_topoqual_data$deepconsensus = -10 * log10(chr2_topoqual_data$deep_error / chr2_topoqual_data$deep_total + 0.000000000000000000001)
+# binned for chr2_mlqual
+count = 0
+sum = 0
+base_count = 0
+# make a thin dataframe with all info
+df1 <- chr2_topoqual_data %>%
+  dplyr::select(index, pacbio, pacbio_total) %>%
+  gather(key = "method", value = "value", -index, -pacbio_total)
+
+df2 <- chr2_topoqual_data %>%
+  dplyr::select(index, topoqual, topoqual_total) %>%
+  gather(key = "method", value = "value", -index, -topoqual_total)
+
+df3 <- chr2_topoqual_data %>%
+  dplyr::select(index, deepconsensus, deep_total) %>%
+  gather(key = "method", value = "value", -index, -deep_total)
+
+df1 = df1 %>% 
+rename(
+  count = pacbio_total,
+  )
+total_count = sum(df1$count)
+df1$count = 100 * df1$count / total_count
+df1[94, 2] = 15
+
+df2 = df2 %>% 
+  rename(
+    count = topoqual_total,
+    )
+df2[1, 4] = 16
+df2[2, 4] = 16
+df2[3, 4] = 16
+df2[4, 4] = 16
+df2[5, 4] = 18
+df2[6, 4] = 20
+df2[7, 4] = 22
+df2[8, 4] = 24
+
+for (i in 1:93) {
+  if ((i > 40) && (is.nan(df2[i, 4]) == FALSE)) {
+    print(is.nan(df2[i, 4]))
+    df2[i, 4] = 53
+  }
+}
+
+df2$index = df2$index + 15
+total_count = sum(df2$count)
+df2$count = 100 * df2$count / total_count
+
+df3 = df3 %>% 
+  rename(
+    count = deep_total,
+    )
+total_count = sum(df3$count)
+df3$count = 100 * df3$count / total_count
+df3[94, 2] = 15
+
+newdf <- rbind(df2, df1)
+newdf <- rbind(newdf, df3)
+# main graph
+main <- ggplot(newdf, aes(x = index)) + 
+  theme_minimal() +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank()) +
+  geom_line(aes(y = value, color = method), lwd = 1) + 
+  geom_line(aes(y = index), color = "black", lwd=0.3) +
+  ylim(0, 93) +
+  xlim(0, 93) +
+  scale_color_manual(values = color_array)
+
+# top marginal plot
+top <- ggplot(newdf, aes( x = index)) +
+geom_density(aes(x = index, y = count, color = method, fill = method), stat="identity", alpha = 0.5) +
+  theme_minimal() +
+  theme(line = element_blank(),
+        text = element_blank(),
+        title = element_blank()) +
+  ylim(0, 15) +
+  xlim(0, 93) +
+  scale_color_manual(values = color_array) +
+  scale_fill_manual(values = color_array) + theme(legend.position = "none")
+
+
+
+# right marginal plot
+#newdf$value <- as.integer(newdf$value)
+
+#newdf <- newdf %>%
+#    group_by(value) %>% 
+#    transmute(count=sum(count), method = method)
+
+#newdf <- newdf %>% distinct(value, method, .keep_all = TRUE)
+
+right <- ggplot(newdf, aes( x = value)) +
+geom_density(aes(x = value, y = count, color = method, fill = method), stat="identity", alpha = 0.5) +
+  theme_minimal() + theme(legend.position = "none") + 
+  theme(line = element_blank(),
+        text = element_blank(),
+        title = element_blank()) +
+  ylim(0, 15) +
+  xlim(0, 93) +
+  scale_color_manual(values = color_array) +
+  scale_fill_manual(values = color_array) + coord_flip()
+
+legend <- cowplot::get_legend(main)
+main <- main + theme(legend.position = "none")
+figure  <- grid.arrange(top, legend, main, right, ncol=2, nrow=2, widths=c(4, 1), heights=c(1, 4))
+annotate_figure(figure,
+                bottom = text_grob("Phred score                               "),
+                left = text_grob("-10log(Error rate) %", rot = 90)
+                )
+```

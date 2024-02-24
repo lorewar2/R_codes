@@ -1,0 +1,44 @@
+
+
+```{r}
+# Libraries
+library(tidyverse)
+library(hrbrthemes)
+library(viridis)
+ACC <- c(3.39, 3.50, 3.33, 3.53, 2.05, 2.30, 1.88, 2.09, 1.85, 2.07, 1.86, 1.86, 1.57, 1.88, 1.62, 1.66, 1.59, 1.69, 1.66, 1.59, 1.71, 1.50, 1.54, 1.62, 1.56, 1.59, 1.44, 1.69, 1.55, 1.56, 1.52, 1.56, 1.52, 1.52, 1.57, 1.38, 1.32, 1.58, 1.37, 1.49, 1.44, 1.39, 0.98, 1.86, 1.32, 1.49, 1.36, 1.44, 1.40, 1.35, 1.35, 1.33, 1.42, 1.23, 1.30, 1.30, 1.23, 1.36, 1.36, 1.22, 1.21, 1.33, 1.21, 1.30, 1.19, 1.19, 1.17, 1.16, 1.14, 1.20, 1.17, 1.13, 1.24, 1.01, 1.20, 1.05, 1.17, 1.04, 1.22, 1.00, 1.05, 1.03, 1.03, 1.03, 0.85, 1.16, 0.95, 1.02, 0.97, 0.89, 0.99, 0.86, 0.79, 0.97, 0.86, 0.85, 0.41, 0.34)
+ISOLATE <- c(3.39, 3.5, 3.33, 3.53, 2.05, 2.3, 1.88, 2.09, 1.85, 2.07, 0.41, 0.34)
+# sort vectors
+ACC <- sort(ACC, decreasing = TRUE)
+ISOLATE <- sort(ISOLATE, decreasing = TRUE)
+
+# x position vectors
+ACC_POS <- seq(from = 0.7, to = 1.3, by = 0.6/(length(ACC) - 1))
+multiplier = 0.6/(length(ACC) - 1)
+#ISOLATE_POS <- c(1.7 + multiplier * 1, 1.7 + multiplier * 2, 1.7 + multiplier * 85 , 1.7 + multiplier * 89, 1.7 + multiplier * 91, 1.7 + multiplier * 92, 1.7 + multiplier * 93, 1.7 + multiplier * 94, 1.7 + multiplier * 95, 1.7 + multiplier * 96, 1.7 + multiplier * 97, 1.7 + multiplier * 98)
+
+ISOLATE_POS <- c(1.7 + multiplier * 1, 1.7 + multiplier * 2, 1.7 + multiplier * 3 , 1.7 + multiplier * 4, 1.7 + multiplier * 5, 1.7 + multiplier * 6, 1.7 + multiplier * 7, 1.7 + multiplier * 8, 1.7 + multiplier * 9, 1.7 + multiplier * 13, 1.7 + multiplier * 97, 1.7 + multiplier * 98)
+
+# create a dataset
+data <- data.frame(
+  name=c( rep("49 isolates", 98), rep("6 isolates", 12)),
+  value=c( ACC, ISOLATE )
+)
+
+# Plot
+data %>%
+  ggplot( aes(x=name, y=value, fill=name)) +
+    geom_boxplot(outlier.size = -1) +
+    scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
+    geom_point(aes(x = c(ACC_POS, ISOLATE_POS))) +
+    theme_ipsum() +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size = 11)
+    ) +
+    ggtitle("A boxplot") +
+    xlab("")
+
+
+```
+
+

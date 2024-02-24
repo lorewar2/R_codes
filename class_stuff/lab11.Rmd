@@ -1,0 +1,58 @@
+
+
+```{r}
+library(Sleuth3)
+#data("ex1217")
+# a
+pairs(ex1217[c("Mortality", "Precip", "Humidity", "JanTemp", "JulyTemp", "Over65", "House", "Educ", "Sound", "Density")])
+
+# b
+library(Rfit)
+library(leaps)
+all.sub <- regsubsets(Mortality ~ Precip + Humidity + JanTemp + JulyTemp + Over65 + House + Educ + Sound + Density + NonWhite + WhiteCol + Poor,
+data=ex1217,
+nbest = 1, # 1 best model for each number of predictors
+nvmax = NULL, # NULL for no limit on number of variables
+force.in = NULL, force.out = NULL,
+method = "exhaustive")
+all.sub
+
+plot(all.sub, scale = "Cp", main = "Cp")
+plot(all.sub, scale = "bic", main = "BIC")
+
+all.sum <- summary(all.sub)
+which.min(all.sum$bic)
+
+all.sum$which[which.min(all.sum$bic),]
+
+# the model contains janTemp, Houd, Educ and non white
+# c
+lm_socio = lm(Mortality ~ JanTemp + House + Educ + NonWhite , data = ex1217)
+summary(lm_socio)
+lm_socio_poll = lm(Mortality ~ log(HC) + log(NOX) + log(SO2) + JanTemp + House + Educ + NonWhite , data = ex1217)
+summary(lm_socio_poll)
+
+# d
+library(MASS)
+lm_all <- lm(Mortality ~ Precip + Humidity + JanTemp + JulyTemp + Over65 + House + Educ + Sound + Density + NonWhite + WhiteCol + Poor, data = ex1217)
+
+step(lm_all, direction="both", trace=FALSE)$anova
+
+# e
+library(glmnet)
+y <- ex1217$Mortality
+x <- model.matrix(lm_all)
+head(x)
+
+# 5-fold CV to find the best lambda for lasso
+set.seed(2)
+lambda_seq <- 10^seq(2, -2, by = -.1)
+cv_lasso <- cv.glmnet(x, y, alpha = 1, lambda = lambda_seq, nfolds = 5)
+# identifying best lamda
+lasso_lam <- cv_lasso$lambda.min
+lasso_lam
+# The best lasso model
+lasso_best <- glmnet(x, y, alpha = 1, lambda = lasso_lam)
+coef(lasso_best)
+
+```

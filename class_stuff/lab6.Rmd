@@ -1,0 +1,23 @@
+---
+title: "LAB 6"
+output: html_notebook
+---
+
+```{r}
+library(Sleuth3)
+# data(case0302)
+# Comparison boxplot of the data
+boxplot(Dioxin ~ Veteran, data = case0302)
+# Comparison boxplot of the logged data
+boxplot(log(Dioxin+1) ~ Veteran, data = case0302)
+# t test on data
+t.test(Dioxin~Veteran, data = case0302, alternative = "less")
+# t test on log transform data
+t.test(log(Dioxin + 1)~Veteran, data = case0302, alternative = "less")
+# rank sum test on data
+wilcox.test(Dioxin~Veteran, data = case0302, alternative = "less")
+# rank sum test on log transform data
+wilcox.test(log(Dioxin + 1)~Veteran, data = case0302, alternative = "less")
+
+```
+
